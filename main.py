@@ -8,10 +8,11 @@ import logging
 from log_config import log_config
 from flask import Flask
 host = "127.0.0.1"
+# host = "47.75.10.215"
 port=3306
 db="huobi"
 user = "huobi"
-password="nishengri"
+password="nishengri@huobi"
 app = Flask(__name__)
 
 log_config.init_log_config()
@@ -35,7 +36,7 @@ def huobi_verify(key):
         )
         cursor = conn.cursor()
         cursor.execute("""
-        select account, expire_date from keys where access_key=%s""", key)
+        select account, expire_date from `users` where access_key=%s""", key)
         ret = cursor.fetchone()
         if not ret:
             logger.error("user does not exist 202, key={}".format(key))
@@ -44,10 +45,10 @@ def huobi_verify(key):
         if ret[1]:
             if ret[1] > datetime.datetime.now():
                 logger.info("verify 200, key={}".format(key))
-                return ret[1].stftime("%Y-%m-%d %H:%M:%S"), 200
+                return ret[1].strftime("%Y-%m-%d %H:%M:%S"), 200
             else:
                 logger.error("expired 203, key={}".format(key))
-                return ret[1].stftime("%Y-%m-%d %H:%M:%S"), 203
+                return ret[1].strftime("%Y-%m-%d %H:%M:%S"), 203
         cursor.close()
         conn.close()
     except Exception as e:
