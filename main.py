@@ -23,7 +23,7 @@ def huobi_verify(key):
         logger.info("huobi verify key={}".format(key))
         if not key or len(key) < 10:
             logger.error("invalid key 201, key={}".format(key))
-            return "invalid key--{}".format("unknown"), 201
+            return "invalid key, key={}".format(key), 201
 
         conn = pymysql.connect(
             host=host,
@@ -39,7 +39,7 @@ def huobi_verify(key):
         ret = cursor.fetchone()
         if not ret:
             logger.error("user does not exist 202, key={}".format(key))
-            return "user does not exist.", 202
+            return "user does not exist.key={}".format(key), 202
 
         if ret[1]:
             if ret[1] > datetime.datetime.now():
@@ -52,7 +52,7 @@ def huobi_verify(key):
         conn.close()
     except Exception as e:
         logger.info("exception 204, key={}, e={}".format(key, e))
-        return "exception", 204
+        return "exception={}".format(e), 204
 
 
 if __name__ == '__main__':
