@@ -81,8 +81,8 @@ def huobi_notify(key):
             logger.error("user does not exist 202, key={}".format(key))
             return "user does not exist.key={}".format(key), 202
         if ret[1]:
-            if ret[0] == "kanyun":
-                return "阚胖胖, 用的爽不爽？嘿嘿！", 200
+            # if ret[0] == "kanyun":
+            #     return "阚胖胖, 用的爽不爽？嘿嘿！", 200
             # else:
             #     return "", 201
 
