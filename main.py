@@ -94,6 +94,7 @@ def huobi_notify(key):
 
         cursor.close()
         conn.close()
+        return "", 200
     except Exception as e:
         logger.info("exception 204, key={}, e={}".format(key, e))
         return "exception={}".format(e), 204
