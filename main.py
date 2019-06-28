@@ -121,7 +121,7 @@ def heart(account):
         conn.commit()
 
         cursor.execute("""
-           select expire_date from `users` where account=%s and password=%s""", (account))
+           select expire_date from `users` where account=%s""", (account, ))
         ret = cursor.fetchone()
         if ret:
             expire_date = ret[0]
@@ -132,7 +132,7 @@ def heart(account):
         cursor.close()
         conn.close()
     except Exception as e:
-        logger.error("heart faild, account={}".format(account))
+        logger.error("heart failed, account={}, e={}".format(account, str(e)))
         return {"code": -1, "data": "", "msg": "心跳服务器异常, 请稍后重试!"}
 
 
