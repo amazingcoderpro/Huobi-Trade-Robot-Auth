@@ -78,7 +78,7 @@ def login(account, password):
         if expire_date:
             if expire_date <= datetime.datetime.now():
                 logger.warning("expired. account={}, expired={}".format(account, ret[0].strftime("%Y-%m-%d %H:%M:%S")))
-                return {"code": 0, "data": expire_date.strftime("%Y-%m-%d %H:%M:%S"), "msg": u"账号已过期！请联系管理员续费！"}
+                return {"code": 0, "data": expire_date.strftime("%Y-%m-%d %H:%M:%S"), "msg": u"抱歉！您的账号已过期, 请联系客服续费！"}
 
             # in use??
             if in_use == 1:
@@ -91,11 +91,11 @@ def login(account, password):
                         return {"code": 1, "data": expire_date.strftime("%Y-%m-%d %H:%M:%S"), "msg": u"登录成功！"}
                     else:
                         logger.warning("in user and last use near 300s")
-                        return {"code": 2, "data": expire_date.strftime("%Y-%m-%d %H:%M:%S"), "msg": u"登录失败, 不允许同一账号重复登录, 请稍后重试！"}
+                        return {"code": 2, "data": expire_date.strftime("%Y-%m-%d %H:%M:%S"), "msg": u"登录失败, 不允许同一账号重复登录, 请3分钟后重试！"}
                 else:
                     logger.warning("in user and last use near 300s")
                     return {"code": 2, "data": expire_date.strftime("%Y-%m-%d %H:%M:%S"),
-                            "msg": u"登录失败, 不允许同一账号重复登录, 请稍后重试！"}
+                            "msg": u"登录失败, 不允许同一账号重复登录, 请3分钟后重试！"}
 
             else:
                 cursor.execute("update `users` set in_use=1, last_use=%s where account=%s",
