@@ -84,7 +84,7 @@ def login(account, password):
             if in_use == 1:
                 # 已经在用，也有可能是程序异常退出了导致没有及时注销，　再判断心跳时间时不是已经超过300秒了，如果已经过了，也可以登录
                 if last_user:
-                    if (datetime.datetime.now() - ret[2]).total_seconds() > 300:
+                    if (datetime.datetime.now() - ret[2]).total_seconds() > 180:
                         cursor.execute("update `users` set in_use=1, last_use=%s where account=%s",
                                        (datetime.datetime.now(), account))
                         conn.commit()
@@ -118,13 +118,23 @@ def heart(account):
         conn = get_conn()
         cursor = conn.cursor()
         cursor.execute("update `users` set last_use=%s where account=%s", (datetime.datetime.now(), account))
+        conn.commit()
+
+        cursor.execute("""
+           select expire_date from `users` where account=%s and password=%s""", (account))
+        ret = cursor.fetchone()
+        if ret:
+            expire_date = ret[0]
+            return {"code": 1, "data": expire_date.strftime("%Y-%m-%d %H:%M:%S"), "msg": u"心跳发送成功!"}
+        else:
+            return {"code": 0, "data": "", "msg": u"未找到当前账号信息!"}
+
         cursor.close()
         conn.close()
     except Exception as e:
         logger.error("heart faild, account={}".format(account))
         return {"code": -1, "data": "", "msg": "心跳服务器异常, 请稍后重试!"}
 
-    return {"code": 1, "data": "", "msg": "心跳发送成功!"}
 
 def logout(account):
     try:
